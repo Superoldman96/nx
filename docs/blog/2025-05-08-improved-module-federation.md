@@ -5,6 +5,7 @@ authors: ['Colum Ferry']
 tags: ['nx', 'module-federation']
 cover_image: /blog/images/2025-05-08/module-federation.avif
 description: 'Nx 21 introduces native support for Module Federation with Inferred Tasks and Continuous Tasks, enabling streamlined Rspack configs and seamless multi-app serving for improved developer experience.'
+pinned: true
 ---
 
 {% callout type="deepdive" title="Nx 21 Launch Week" expanded=true %}
@@ -12,8 +13,8 @@ description: 'Nx 21 introduces native support for Module Federation with Inferre
 - [Nx 21 Release: Continuous tasks and Terminal UI lead the way](/blog/nx-21-release)
 - [Introducing Migrate UI in Nx Console](/blog/migrate-ui)
 - **New and Improved Module Federation Experience**
-- Continuous tasks are a huge DX improvement
-- A New UI For The Humble Terminal
+- [Continuous tasks are a huge DX improvement](/blog/nx-21-continuous-tasks)
+- [A New UI For The Humble Terminal](/blog/nx-21-terminal-ui)
 
 {% /callout %}
 

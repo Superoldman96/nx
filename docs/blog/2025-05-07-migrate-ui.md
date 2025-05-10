@@ -6,6 +6,7 @@ tags: ['nx', 'nx-console']
 cover_image: /blog/images/2025-05-07/migrate-ui-header.avif
 description: 'Introducing the new Migrate UI in Nx Console, a visual interface that simplifies the migration process.'
 youtubeUrl: 'https://youtu.be/5xe9ziAV3zg'
+pinned: true
 ---
 
 {% callout type="deepdive" title="Nx 21 Launch Week" expanded=true %}
@@ -15,8 +16,8 @@ This article is part of the Nx 21 Launch Week series:
 - [Nx 21 Release: Continuous tasks and Terminal UI lead the way](/blog/nx-21-release)
 - **Introducing Migrate UI in Nx Console**
 - [New and Improved Module Federation Experience](/blog/improved-module-federation)
-- Continuous tasks are a huge DX improvement
-- A New UI For The Humble Terminal
+- [Continuous tasks are a huge DX improvement](/blog/nx-21-continuous-tasks)
+- [A New UI For The Humble Terminal](/blog/nx-21-terminal-ui)
 
 {% /callout %}
 

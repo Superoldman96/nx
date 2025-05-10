@@ -14,6 +14,7 @@ use std::sync::{Arc, Mutex, RwLock};
 use tokio::sync::mpsc;
 use tokio::sync::mpsc::UnboundedSender;
 use tracing::{debug, trace};
+use tui_logger::{LevelFilter, TuiLoggerSmartWidget, TuiWidgetEvent, TuiWidgetState};
 use vt100_ctt::Parser;
 
 use crate::native::tui::tui::Tui;
@@ -58,7 +59,6 @@ pub struct App {
     terminal_pane_data: [TerminalPaneData; 2],
     spacebar_mode: bool,
     pane_tasks: [Option<String>; 2], // Tasks assigned to panes 1 and 2 (0-indexed)
-    task_list_hidden: bool,
     action_tx: Option<UnboundedSender<Action>>,
     resize_debounce_timer: Option<u128>, // Timer for debouncing resize events
     // task id -> pty instance
@@ -66,6 +66,8 @@ pub struct App {
     selection_manager: Arc<Mutex<TaskSelectionManager>>,
     pinned_tasks: Vec<String>,
     tasks: Vec<Task>,
+    debug_mode: bool,
+    debug_state: TuiWidgetState,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -125,12 +127,13 @@ impl App {
             terminal_pane_data: [main_terminal_pane_data, TerminalPaneData::new()],
             spacebar_mode: false,
             pane_tasks: [None, None],
-            task_list_hidden: false,
             action_tx: None,
             resize_debounce_timer: None,
             pty_instances: HashMap::new(),
             selection_manager,
             tasks,
+            debug_mode: false,
+            debug_state: TuiWidgetState::default().set_default_display_level(LevelFilter::Debug),
         })
     }
 
@@ -150,7 +153,7 @@ impl App {
                     .select_task(task.clone());
 
                 if pinned_tasks.len() == 1 && idx == 0 {
-                    self.display_and_focus_current_task_in_terminal_pane(true);
+                    self.display_and_focus_current_task_in_terminal_pane(self.tasks.len() != 1);
                 } else {
                     self.assign_current_task_to_pane(idx);
                 }
@@ -169,6 +172,9 @@ impl App {
 
     pub fn update_task_status(&mut self, task_id: String, status: TaskStatus) {
         self.dispatch_action(Action::UpdateTaskStatus(task_id.clone(), status));
+        if status == TaskStatus::InProgress && self.tasks.len() == 1 {
+            self.terminal_pane_data[0].set_interactive(true);
+        }
     }
 
     pub fn print_task_terminal_output(&mut self, task_id: String, output: String) {
@@ -292,10 +298,14 @@ impl App {
             tui::Event::Render => action_tx.send(Action::Render)?,
             tui::Event::Resize(x, y) => action_tx.send(Action::Resize(x, y))?,
             tui::Event::Key(key) => {
-                debug!("Handling Key Event: {:?}", key);
+                trace!("Handling Key Event: {:?}", key);
 
-                // Record that the user has interacted with the app
-                self.user_has_interacted = true;
+                // If the app is in interactive mode, interactions are with
+                // the running task, not the app itself
+                if !self.is_interactive_mode() {
+                    // Record that the user has interacted with the app
+                    self.user_has_interacted = true;
+                }
 
                 // Handle Ctrl+C to quit, unless we're in interactive mode and the focus is on a terminal pane
                 if key.code == KeyCode::Char('c')
@@ -322,6 +332,16 @@ impl App {
                             Ok(false)
                         }
                     };
+                }
+
+                if matches!(key.code, KeyCode::F(12)) {
+                    self.dispatch_action(Action::ToggleDebugMode);
+                    return Ok(false);
+                }
+
+                if self.debug_mode {
+                    self.handle_debug_event(key);
+                    return Ok(false);
                 }
 
                 // Only handle '?' key if we're not in interactive mode and the countdown popup is not open
@@ -495,7 +515,7 @@ impl App {
                                         self.focus_previous();
                                     }
                                     KeyCode::Esc => {
-                                        if !self.task_list_hidden {
+                                        if !self.is_task_list_hidden() {
                                             self.update_focus(Focus::TaskList);
                                         }
                                     }
@@ -681,8 +701,12 @@ impl App {
                 }
             }
             tui::Event::Mouse(mouse) => {
-                // Record that the user has interacted with the app
-                self.user_has_interacted = true;
+                // If the app is in interactive mode, interactions are with
+                // the running task, not the app itself
+                if !self.is_interactive_mode() {
+                    // Record that the user has interacted with the app
+                    self.user_has_interacted = true;
+                }
 
                 match mouse.kind {
                     MouseEventKind::ScrollUp => {
@@ -729,7 +753,7 @@ impl App {
         action_tx: &UnboundedSender<Action>,
     ) {
         if action != Action::Tick && action != Action::Render {
-            debug!("{action:?}");
+            trace!("{action:?}");
         }
         match &action {
             // Quit immediately
@@ -749,6 +773,10 @@ impl App {
                 // Ensure the pty instances get resized appropriately (debounced)
                 let _ = self.debounce_pty_resize();
             }
+            Action::ToggleDebugMode => {
+                self.debug_mode = !self.debug_mode;
+                debug!("Debug mode: {}", self.debug_mode);
+            }
             Action::Render => {
                 tui.draw(|f| {
                     let area = f.area();
@@ -763,6 +791,12 @@ impl App {
 
                     let frame_area = self.frame_area.unwrap();
                     let layout_areas = self.layout_areas.as_mut().unwrap();
+
+                    if self.debug_mode {
+                        let debug_widget = TuiLoggerSmartWidget::default().state(&self.debug_state);
+                        f.render_widget(debug_widget, frame_area);
+                        return;
+                    }
 
                     // TODO: move this to the layout manager?
                     // Check for minimum viable viewport size at the app level
@@ -1009,10 +1043,11 @@ impl App {
 
     /// Dispatches an action to the action tx for other components to handle however they see fit
     fn dispatch_action(&self, action: Action) {
-        let tx = self.action_tx.clone().unwrap();
-        tokio::spawn(async move {
-            let _ = tx.send(action);
-        });
+        if let Some(tx) = &self.action_tx {
+            tx.send(action).unwrap_or_else(|e| {
+                debug!("Failed to dispatch action: {}", e);
+            });
+        }
     }
 
     fn recalculate_layout_areas(&mut self) {
@@ -1037,7 +1072,7 @@ impl App {
     /// Toggles the visibility of the output pane for the currently selected task.
     /// In spacebar mode, the output follows the task selection.
     fn toggle_output_visibility(&mut self) {
-        self.task_list_hidden = false;
+        // TODO: Not sure why we do this, this action only happens when the task list is visible
         self.layout_manager
             .set_task_list_visibility(TaskListVisibility::Visible);
 
@@ -1120,7 +1155,7 @@ impl App {
                     Some(pane) => Focus::MultipleOutput(pane),
                     None => {
                         // If the task list is hidden, try and go back to the previous pane if there is one, otherwise do nothing
-                        if self.task_list_hidden {
+                        if self.is_task_list_hidden() {
                             if current_pane > 0 {
                                 Focus::MultipleOutput(current_pane - 1)
                             } else {
@@ -1162,7 +1197,7 @@ impl App {
                         .find(|&idx| self.pane_tasks[idx].is_some())
                     {
                         Focus::MultipleOutput(prev_pane)
-                    } else if !self.task_list_hidden {
+                    } else if !self.is_task_list_hidden() {
                         // Go to task list if it's visible
                         Focus::TaskList
                     } else {
@@ -1178,7 +1213,7 @@ impl App {
                     }
                 } else {
                     // We're at leftmost pane (index 0)
-                    if !self.task_list_hidden {
+                    if !self.is_task_list_hidden() {
                         // Go to task list if it's visible
                         Focus::TaskList
                     } else if num_panes > 1 {
@@ -1209,13 +1244,7 @@ impl App {
         if !self.has_visible_panes() {
             return;
         }
-        self.task_list_hidden = !self.task_list_hidden;
-        self.layout_manager
-            .set_task_list_visibility(if self.task_list_hidden {
-                TaskListVisibility::Hidden
-            } else {
-                TaskListVisibility::Visible
-            });
+        self.layout_manager.toggle_task_list_visibility();
         self.recalculate_layout_areas();
         // Ensure the pty instances get resized appropriately (no debounce as this is based on an imperative user action)
         let _ = self.handle_pty_resize();
@@ -1392,21 +1421,27 @@ impl App {
         Ok(())
     }
 
+    fn is_task_list_hidden(&self) -> bool {
+        self.layout_manager.get_task_list_visibility() == TaskListVisibility::Hidden
+    }
+
     fn create_and_register_pty_instance(
         &mut self,
         task_id: &str,
         parser_and_writer: External<(ParserArc, WriterArc)>,
     ) {
         // Access the contents of the External
-        let parser_and_writer_clone = parser_and_writer.clone();
-        let (parser, writer) = &parser_and_writer_clone;
         let pty = Arc::new(
-            PtyInstance::new(task_id.to_string(), parser.clone(), writer.clone())
-                .map_err(|e| napi::Error::from_reason(format!("Failed to create PTY: {}", e)))
-                .unwrap(),
+            PtyInstance::new(
+                task_id.to_string(),
+                parser_and_writer.0.clone(),
+                parser_and_writer.1.clone(),
+            )
+            .map_err(|e| napi::Error::from_reason(format!("Failed to create PTY: {}", e)))
+            .unwrap(),
         );
 
-        self.pty_instances.insert(task_id.to_string(), pty.clone());
+        self.pty_instances.insert(task_id.to_string(), pty);
     }
 
     fn create_empty_parser_and_noop_writer() -> (ParserArc, External<(ParserArc, WriterArc)>) {
@@ -1443,5 +1478,42 @@ impl App {
         self.previous_focus = self.focus;
         self.focus = focus;
         self.dispatch_action(Action::UpdateFocus(focus));
+    }
+
+    fn handle_debug_event(&mut self, key: KeyEvent) {
+        // https://docs.rs/tui-logger/latest/tui_logger/#smart-widget-key-commands
+        // |  KEY     | ACTION
+        // |----------|-----------------------------------------------------------|
+        // | h        | Toggles target selector widget hidden/visible
+        // | f        | Toggle focus on the selected target only
+        // | UP       | Select previous target in target selector widget
+        // | DOWN     | Select next target in target selector widget
+        // | LEFT     | Reduce SHOWN (!) log messages by one level
+        // | RIGHT    | Increase SHOWN (!) log messages by one level
+        // | -        | Reduce CAPTURED (!) log messages by one level
+        // | +        | Increase CAPTURED (!) log messages by one level
+        // | PAGEUP   | Enter Page Mode and scroll approx. half page up in log history.
+        // | PAGEDOWN | Only in page mode: scroll 10 events down in log history.
+        // | ESCAPE   | Exit page mode and go back to scrolling mode
+        // | SPACE    | Toggles hiding of targets, which have logfilter set to off
+        let debug_widget_event = match key.code {
+            KeyCode::Char(' ') => Some(TuiWidgetEvent::SpaceKey),
+            KeyCode::Esc => Some(TuiWidgetEvent::EscapeKey),
+            KeyCode::PageUp => Some(TuiWidgetEvent::PrevPageKey),
+            KeyCode::PageDown => Some(TuiWidgetEvent::NextPageKey),
+            KeyCode::Up => Some(TuiWidgetEvent::UpKey),
+            KeyCode::Down => Some(TuiWidgetEvent::DownKey),
+            KeyCode::Left => Some(TuiWidgetEvent::LeftKey),
+            KeyCode::Right => Some(TuiWidgetEvent::RightKey),
+            KeyCode::Char('+') => Some(TuiWidgetEvent::PlusKey),
+            KeyCode::Char('-') => Some(TuiWidgetEvent::MinusKey),
+            KeyCode::Char('h') => Some(TuiWidgetEvent::HideKey),
+            KeyCode::Char('f') => Some(TuiWidgetEvent::FocusKey),
+            _ => None,
+        };
+
+        if let Some(event) = debug_widget_event {
+            self.debug_state.transition(event);
+        }
     }
 }
