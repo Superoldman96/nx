@@ -399,14 +399,14 @@
       }
     },
     "migrations": {
-      "/technologies/angular/api/migrations/update-angular-cli-version-20-0-0-rc-3": {
-        "description": "Update the @angular/cli package version to 20.0.0-rc.3.",
-        "file": "generated/packages/angular/migrations/update-angular-cli-version-20-0-0-rc-3.json",
+      "/technologies/angular/api/migrations/update-angular-cli-version-20-0-0": {
+        "description": "Update the @angular/cli package version to ~20.0.0.",
+        "file": "generated/packages/angular/migrations/update-angular-cli-version-20-0-0.json",
         "hidden": false,
-        "name": "update-angular-cli-version-20-0-0-rc-3",
-        "version": "21.2.0-beta.0",
+        "name": "update-angular-cli-version-20-0-0",
+        "version": "21.2.0-beta.3",
         "originalFilePath": "/packages/angular",
-        "path": "/technologies/angular/api/migrations/update-angular-cli-version-20-0-0-rc-3",
+        "path": "/technologies/angular/api/migrations/update-angular-cli-version-20-0-0",
         "type": "migration"
       },
       "/technologies/angular/api/migrations/migrate-provide-server-rendering-import": {
@@ -414,17 +414,17 @@
         "file": "generated/packages/angular/migrations/migrate-provide-server-rendering-import.json",
         "hidden": false,
         "name": "migrate-provide-server-rendering-import",
-        "version": "21.2.0-beta.0",
+        "version": "21.2.0-beta.3",
         "originalFilePath": "/packages/angular",
         "path": "/technologies/angular/api/migrations/migrate-provide-server-rendering-import",
         "type": "migration"
       },
       "/technologies/angular/api/migrations/replace-provide-server-routing": {
-        "description": "Replace `provideServerRouting` with `provideServerRendering` using `withRoutes`.",
+        "description": "Replace `provideServerRouting` and `provideServerRoutesConfig` with `provideServerRendering` using `withRoutes`.",
         "file": "generated/packages/angular/migrations/replace-provide-server-routing.json",
         "hidden": false,
         "name": "replace-provide-server-routing",
-        "version": "21.2.0-beta.0",
+        "version": "21.2.0-beta.3",
         "originalFilePath": "/packages/angular",
         "path": "/technologies/angular/api/migrations/replace-provide-server-routing",
         "type": "migration"
@@ -434,7 +434,7 @@
         "file": "generated/packages/angular/migrations/set-generator-defaults-for-previous-style-guide.json",
         "hidden": false,
         "name": "set-generator-defaults-for-previous-style-guide",
-        "version": "21.2.0-beta.0",
+        "version": "21.2.0-beta.3",
         "originalFilePath": "/packages/angular",
         "path": "/technologies/angular/api/migrations/set-generator-defaults-for-previous-style-guide",
         "type": "migration"
@@ -444,7 +444,7 @@
         "file": "generated/packages/angular/migrations/update-module-resolution.json",
         "hidden": false,
         "name": "update-module-resolution",
-        "version": "21.2.0-beta.0",
+        "version": "21.2.0-beta.3",
         "originalFilePath": "/packages/angular",
         "path": "/technologies/angular/api/migrations/update-module-resolution",
         "type": "migration"
@@ -454,9 +454,49 @@
         "file": "generated/packages/angular/migrations/21.2.0-package-updates.json",
         "hidden": false,
         "name": "21.2.0-package-updates",
-        "version": "21.2.0-beta.0",
+        "version": "21.2.0-beta.3",
         "originalFilePath": "/packages/angular",
         "path": "/technologies/angular/api/migrations/21.2.0-package-updates",
+        "type": "migration"
+      },
+      "/technologies/angular/api/migrations/21.2.0-angular-eslint-package-updates": {
+        "description": "",
+        "file": "generated/packages/angular/migrations/21.2.0-angular-eslint-package-updates.json",
+        "hidden": false,
+        "name": "21.2.0-angular-eslint-package-updates",
+        "version": "21.2.0-beta.3",
+        "originalFilePath": "/packages/angular",
+        "path": "/technologies/angular/api/migrations/21.2.0-angular-eslint-package-updates",
+        "type": "migration"
+      },
+      "/technologies/angular/api/migrations/21.2.0-@angular-eslint-package-updates": {
+        "description": "",
+        "file": "generated/packages/angular/migrations/21.2.0-@angular-eslint-package-updates.json",
+        "hidden": false,
+        "name": "21.2.0-@angular-eslint-package-updates",
+        "version": "21.2.0-beta.3",
+        "originalFilePath": "/packages/angular",
+        "path": "/technologies/angular/api/migrations/21.2.0-@angular-eslint-package-updates",
+        "type": "migration"
+      },
+      "/technologies/angular/api/migrations/21.2.0-angular-rspack-package-updates": {
+        "description": "",
+        "file": "generated/packages/angular/migrations/21.2.0-angular-rspack-package-updates.json",
+        "hidden": false,
+        "name": "21.2.0-angular-rspack-package-updates",
+        "version": "21.2.0-beta.3",
+        "originalFilePath": "/packages/angular",
+        "path": "/technologies/angular/api/migrations/21.2.0-angular-rspack-package-updates",
+        "type": "migration"
+      },
+      "/technologies/angular/api/migrations/21.2.0-jest-package-updates": {
+        "description": "",
+        "file": "generated/packages/angular/migrations/21.2.0-jest-package-updates.json",
+        "hidden": false,
+        "name": "21.2.0-jest-package-updates",
+        "version": "21.2.0-beta.3",
+        "originalFilePath": "/packages/angular",
+        "path": "/technologies/angular/api/migrations/21.2.0-jest-package-updates",
         "type": "migration"
       },
       "/technologies/angular/api/migrations/21.1.0-package-updates": {
@@ -4065,33 +4105,6 @@
         "path": "/technologies/react/react-native/api/generators/component",
         "type": "generator"
       },
-      "/technologies/react/react-native/api/generators/storybook-configuration": {
-        "description": "Set up Storybook for a React Native application or library.",
-        "file": "generated/packages/react-native/generators/storybook-configuration.json",
-        "hidden": false,
-        "name": "storybook-configuration",
-        "originalFilePath": "/packages/react-native/src/generators/storybook-configuration/schema.json",
-        "path": "/technologies/react/react-native/api/generators/storybook-configuration",
-        "type": "generator"
-      },
-      "/technologies/react/react-native/api/generators/component-story": {
-        "description": "Generate Storybook story for a React Native component.",
-        "file": "generated/packages/react-native/generators/component-story.json",
-        "hidden": false,
-        "name": "component-story",
-        "originalFilePath": "/packages/react-native/src/generators/component-story/schema.json",
-        "path": "/technologies/react/react-native/api/generators/component-story",
-        "type": "generator"
-      },
-      "/technologies/react/react-native/api/generators/stories": {
-        "description": "Create stories for all components declared in an application or library.",
-        "file": "generated/packages/react-native/generators/stories.json",
-        "hidden": false,
-        "name": "stories",
-        "originalFilePath": "/packages/react-native/src/generators/stories/schema.json",
-        "path": "/technologies/react/react-native/api/generators/stories",
-        "type": "generator"
-      },
       "/technologies/react/react-native/api/generators/upgrade-native": {
         "description": "Destructive command to upgrade native iOS and Android code to latest.",
         "file": "generated/packages/react-native/generators/upgrade-native.json",
@@ -4706,15 +4719,6 @@
         "path": "/technologies/test-tools/storybook/api/generators/configuration",
         "type": "generator"
       },
-      "/technologies/test-tools/storybook/api/generators/cypress-project": {
-        "description": "Add cypress E2E app to test a ui library that is set up for Storybook.",
-        "file": "generated/packages/storybook/generators/cypress-project.json",
-        "hidden": false,
-        "name": "cypress-project",
-        "originalFilePath": "/packages/storybook/src/generators/cypress-project/schema.json",
-        "path": "/technologies/test-tools/storybook/api/generators/cypress-project",
-        "type": "generator"
-      },
       "/technologies/test-tools/storybook/api/generators/convert-to-inferred": {
         "description": "Convert existing Storybook project(s) using `@nx/storybook:*` executors to use `@nx/storybook/plugin`. Defaults to migrating all projects. Pass '--project' to migrate only one target.",
         "file": "generated/packages/storybook/generators/convert-to-inferred.json",
@@ -4722,15 +4726,6 @@
         "name": "convert-to-inferred",
         "originalFilePath": "/packages/storybook/src/generators/convert-to-inferred/schema.json",
         "path": "/technologies/test-tools/storybook/api/generators/convert-to-inferred",
-        "type": "generator"
-      },
-      "/technologies/test-tools/storybook/api/generators/migrate-7": {
-        "description": "Migrate to Storybook version 7.",
-        "file": "generated/packages/storybook/generators/migrate-7.json",
-        "hidden": false,
-        "name": "migrate-7",
-        "originalFilePath": "/packages/storybook/src/generators/migrate-7/schema.json",
-        "path": "/technologies/test-tools/storybook/api/generators/migrate-7",
         "type": "generator"
       },
       "/technologies/test-tools/storybook/api/generators/migrate-8": {
@@ -4741,9 +4736,48 @@
         "originalFilePath": "/packages/storybook/src/generators/migrate-8/schema.json",
         "path": "/technologies/test-tools/storybook/api/generators/migrate-8",
         "type": "generator"
+      },
+      "/technologies/test-tools/storybook/api/generators/migrate-9": {
+        "description": "Migrate to Storybook version 9.",
+        "file": "generated/packages/storybook/generators/migrate-9.json",
+        "hidden": false,
+        "name": "migrate-9",
+        "originalFilePath": "/packages/storybook/src/generators/migrate-9/schema.json",
+        "path": "/technologies/test-tools/storybook/api/generators/migrate-9",
+        "type": "generator"
       }
     },
     "migrations": {
+      "/technologies/test-tools/storybook/api/migrations/update-21-2-0-migrate-storybook-v9": {
+        "description": "Update workspace to use Storybook v9",
+        "file": "generated/packages/storybook/migrations/update-21-2-0-migrate-storybook-v9.json",
+        "hidden": false,
+        "name": "update-21-2-0-migrate-storybook-v9",
+        "version": "21.2.0-beta.3",
+        "originalFilePath": "/packages/storybook",
+        "path": "/technologies/test-tools/storybook/api/migrations/update-21-2-0-migrate-storybook-v9",
+        "type": "migration"
+      },
+      "/technologies/test-tools/storybook/api/migrations/update-21-2-0-remove-addon-dependencies": {
+        "description": "Remove deprecated Storybook addon dependencies",
+        "file": "generated/packages/storybook/migrations/update-21-2-0-remove-addon-dependencies.json",
+        "hidden": false,
+        "name": "update-21-2-0-remove-addon-dependencies",
+        "version": "21.2.0-beta.3",
+        "originalFilePath": "/packages/storybook",
+        "path": "/technologies/test-tools/storybook/api/migrations/update-21-2-0-remove-addon-dependencies",
+        "type": "migration"
+      },
+      "/technologies/test-tools/storybook/api/migrations/21.1.0-package-updates": {
+        "description": "",
+        "file": "generated/packages/storybook/migrations/21.1.0-package-updates.json",
+        "hidden": false,
+        "name": "21.1.0-package-updates",
+        "version": "21.2.0-beta.3",
+        "originalFilePath": "/packages/storybook",
+        "path": "/technologies/test-tools/storybook/api/migrations/21.1.0-package-updates",
+        "type": "migration"
+      },
       "/technologies/test-tools/storybook/api/migrations/20.8.0-package-updates": {
         "description": "",
         "file": "generated/packages/storybook/migrations/20.8.0-package-updates.json",
@@ -4881,6 +4915,16 @@
       }
     },
     "migrations": {
+      "/technologies/build-tools/vite/api/migrations/21.2.0-package-updates": {
+        "description": "",
+        "file": "generated/packages/vite/migrations/21.2.0-package-updates.json",
+        "hidden": false,
+        "name": "21.2.0-package-updates",
+        "version": "21.2.0-beta.3",
+        "originalFilePath": "/packages/vite",
+        "path": "/technologies/build-tools/vite/api/migrations/21.2.0-package-updates",
+        "type": "migration"
+      },
       "/technologies/build-tools/vite/api/migrations/21.1.2-package-updates": {
         "description": "",
         "file": "generated/packages/vite/migrations/21.1.2-package-updates.json",
@@ -5455,19 +5499,7 @@
     "name": "azure-cache",
     "packageName": "@nx/azure-cache",
     "description": "A Nx plugin which provides a Nx cache which can be self hosted on Azure Blob Storage.",
-    "documents": {
-      "/reference/core-api/azure-cache/documents/overview": {
-        "id": "overview",
-        "name": "Overview",
-        "description": "A Nx plugin which provides a Nx cache which can be self hosted on Azure Blob Storage.",
-        "file": "external-generated/packages/azure-cache/documents/overview",
-        "itemList": [],
-        "isExternal": false,
-        "path": "/reference/core-api/azure-cache/documents/overview",
-        "tags": [],
-        "originalFilePath": "shared/packages/azure-cache/azure-cache-plugin"
-      }
-    },
+    "documents": {},
     "root": "/libs/nx-packages/azure-cache",
     "source": "/libs/nx-packages/azure-cache/src",
     "executors": {},
@@ -5536,19 +5568,7 @@
     "name": "owners",
     "packageName": "@nx/owners",
     "description": "A Nx plugin which provides the ability to configure and maintain codeowners for projects in Nx workspaces.",
-    "documents": {
-      "/reference/core-api/owners/documents/overview": {
-        "id": "overview",
-        "name": "Overview",
-        "description": "A Nx plugin which provides the ability to configure and maintain codeowners for projects in Nx workspaces.",
-        "file": "external-generated/packages/owners/documents/overview",
-        "itemList": [],
-        "isExternal": false,
-        "path": "/reference/core-api/owners/documents/overview",
-        "tags": [],
-        "originalFilePath": "shared/packages/owners/owners-plugin"
-      }
-    },
+    "documents": {},
     "root": "/libs/nx-packages/owners",
     "source": "/libs/nx-packages/owners/src",
     "executors": {},
@@ -5580,19 +5600,7 @@
     "name": "gcs-cache",
     "packageName": "@nx/gcs-cache",
     "description": "A Nx plugin which provides a Nx cache which can be self hosted on Google Cloud Storage.",
-    "documents": {
-      "/reference/core-api/gcs-cache/documents/overview": {
-        "id": "overview",
-        "name": "Overview",
-        "description": "A Nx plugin which provides a Nx cache which can be self hosted on Google Cloud Storage.",
-        "file": "external-generated/packages/gcs-cache/documents/overview",
-        "itemList": [],
-        "isExternal": false,
-        "path": "/reference/core-api/gcs-cache/documents/overview",
-        "tags": [],
-        "originalFilePath": "shared/packages/gcs-cache/gcs-cache-plugin"
-      }
-    },
+    "documents": {},
     "root": "/libs/nx-packages/gcs-cache",
     "source": "/libs/nx-packages/gcs-cache/src",
     "executors": {},
@@ -5605,19 +5613,7 @@
     "name": "s3-cache",
     "packageName": "@nx/s3-cache",
     "description": "A Nx plugin which provides a Nx cache which can be self hosted on Amazon S3.",
-    "documents": {
-      "/reference/core-api/s3-cache/documents/overview": {
-        "id": "overview",
-        "name": "Overview",
-        "description": "A Nx plugin which provides a Nx cache which can be self hosted on Amazon S3.",
-        "file": "external-generated/packages/s3-cache/documents/overview",
-        "itemList": [],
-        "isExternal": false,
-        "path": "/reference/core-api/s3-cache/documents/overview",
-        "tags": [],
-        "originalFilePath": "shared/packages/s3-cache/s3-cache-plugin"
-      }
-    },
+    "documents": {},
     "root": "/libs/nx-packages/s3-cache",
     "source": "/libs/nx-packages/s3-cache/src",
     "executors": {},
@@ -5630,19 +5626,7 @@
     "name": "shared-fs-cache",
     "packageName": "@nx/shared-fs-cache",
     "description": "A Nx plugin to enable you to use a shared file system directory",
-    "documents": {
-      "/reference/core-api/shared-fs-cache/documents/overview": {
-        "id": "overview",
-        "name": "Overview",
-        "description": "A Nx plugin to enable you to use a shared file system directory",
-        "file": "external-generated/packages/shared-fs-cache/documents/overview",
-        "itemList": [],
-        "isExternal": false,
-        "path": "/reference/core-api/shared-fs-cache/documents/overview",
-        "tags": [],
-        "originalFilePath": "shared/packages/shared-fs-cache/shared-fs-cache-plugin"
-      }
-    },
+    "documents": {},
     "root": "/libs/nx-packages/shared-fs-cache",
     "source": "/libs/nx-packages/shared-fs-cache/src",
     "executors": {},
